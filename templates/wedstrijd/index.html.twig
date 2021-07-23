@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wedstrijd index{% endblock %}
+
+{% block body %}
+    <h1>Wedstrijd index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Spelers</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for wedstrijd in wedstrijds %}
+            <tr>
+                <td>{{ wedstrijd.id }}</td>
+                <td>
+                    {{ wedstrijd.spelerHalf|isWinnaar(wedstrijd)|raw }} vs {{ wedstrijd.spelerHeel|isWinnaar(wedstrijd)|raw }}
+                </td>
+                <td>
+                    <a href="{{ path('wedstrijd_show', {'id': wedstrijd.id}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('wedstrijd_new') }}">Create new</a>
+{% endblock %}
