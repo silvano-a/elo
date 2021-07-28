@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Speler;
 use App\Entity\Wedstrijd;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,36 @@ class WedstrijdRepository extends ServiceEntityRepository
         parent::__construct($registry, Wedstrijd::class);
     }
 
-    // /**
-    //  * @return Wedstrijd[] Returns an array of Wedstrijd objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getOpponentEloLogFromSpeler(Speler $speler)
     {
-        return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('w.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $qb = $this->createQueryBuilder('w');
+        return $qb
+            ->select('w, e')
+            ->innerJoin('w.eloLogs', 'e', Join::WITH, 'e.speler != :speler')
+            ->where('w.spelerHalf = :speler')
+            ->orWhere('w.spelerHeel = :speler')
+            ->setParameter('speler', $speler)
+            ->getQuery()->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Wedstrijd
+    public function getAantalWinsForSpeler(Speler $speler)
     {
         return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->select('count(w.id)')
+            ->andWhere('w.winnaar = :speler')
+            ->setParameter('speler', $speler)
+            ->getQuery()->getSingleScalarResult();
     }
-    */
+
+    public function getAantalLossesForSpeler(Speler $speler)
+    {
+        return $this->createQueryBuilder('w')
+            ->select('count(w.id)')
+            ->andWhere('w.spelerHalf = :speler')
+            ->orWhere('w.spelerHeel = :speler')
+            ->andWhere('w.winnaar != :speler')
+            ->setParameter('speler', $speler)
+            ->getQuery()->getSingleScalarResult();
+    }
 }

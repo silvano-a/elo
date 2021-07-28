@@ -49,11 +49,17 @@ class Speler
      */
     private $gewonnenWedstrijden;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EloLog::class, mappedBy="speler")
+     */
+    private $eloLogs;
+
     public function __construct()
     {
         $this->wedstrijdenHalf = new ArrayCollection();
         $this->wedstrijdenHeel = new ArrayCollection();
         $this->gewonnenWedstrijden = new ArrayCollection();
+        $this->eloLogs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,6 +187,41 @@ class Speler
             // set the owning side to null (unless already changed)
             if ($gewonnenWedstrijden->getWinnaar() === $this) {
                 $gewonnenWedstrijden->setWinnaar(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMatchCount(): int
+    {
+        return (int) count($this->getWedstrijdenHalf()) + count($this->wedstrijdenHeel);
+    }
+
+    /**
+     * @return Collection|EloLog[]
+     */
+    public function getEloLogs(): Collection
+    {
+        return $this->eloLogs;
+    }
+
+    public function addEloLog(EloLog $eloLog): self
+    {
+        if (!$this->eloLogs->contains($eloLog)) {
+            $this->eloLogs[] = $eloLog;
+            $eloLog->setSpeler($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEloLog(EloLog $eloLog): self
+    {
+        if ($this->eloLogs->removeElement($eloLog)) {
+            // set the owning side to null (unless already changed)
+            if ($eloLog->getSpeler() === $this) {
+                $eloLog->setSpeler(null);
             }
         }
 
