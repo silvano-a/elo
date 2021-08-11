@@ -21,7 +21,7 @@ class SpelerController extends AbstractController
     public function index(SpelerRepository $spelerRepository): Response
     {
         return $this->render('speler/index.html.twig', [
-            'spelers' => $spelerRepository->findAll(),
+            'spelers' => $spelerRepository->findAllOrderedByRating(),
         ]);
     }
 

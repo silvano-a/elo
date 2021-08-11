@@ -5,27 +5,20 @@
 {% block body %}
     <h1>Speler index</h1>
 
-    <table class="table">
+    <table class="table" style="text-align: center" width="500px">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Naam</th>
                 <th>Rating</th>
-                <th>Email</th>
-                <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for speler in spelers %}
             <tr>
-                <td>{{ speler.id }}</td>
-                <td>{{ speler.naam }}</td>
-                <td>{{ speler.rating }}</td>
-                <td>{{ speler.email }}</td>
-                <td>
-                    <a href="{{ path('speler_show', {'id': speler.id}) }}">show</a>
-                    <a href="{{ path('speler_edit', {'id': speler.id}) }}">edit</a>
-                </td>
+                <td>{{ loop.index }}</td>
+                <td>{% if speler.isOnHotstreak() %} 🔥{% endif %}{{ speler.naam }}{% if speler.getMatchCount() < 5 %}*{% endif %}{% if speler.isOnHotstreak() %} 🔥{% endif %}</td>
+                <td>{{ speler.rating|round }}</td>
             </tr>
         {% else %}
             <tr>
@@ -34,6 +27,8 @@
         {% endfor %}
         </tbody>
     </table>
+    <p>Players marked with an * have not yet completed 5 games. <br>
+    Scores for these players are provisional</p>
 
     <a href="{{ path('speler_new') }}">Create new</a>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Speler;
+use App\ValueHolders\TimeLineInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,6 +19,19 @@ class SpelerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Speler::class);
     }
+
+    public function findAllOrderedByRating()
+    {
+        $result = $this->createQueryBuilder('s')
+            ->getQuery()->getResult();
+
+        uasort($result, function ($a, $b) {
+            return (float) $a->getRating() < (float) $b->getRating();
+        });
+
+        return $result;
+    }
+
 
     // /**
     //  * @return Speler[] Returns an array of Speler objects

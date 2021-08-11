@@ -171,6 +171,37 @@ class Speler
         return $this->gewonnenWedstrijden;
     }
 
+    public function isOnHotstreak()
+    {
+
+        $totalMatches = array_merge($this->getWedstrijdenHalf()->toArray(), $this->getWedstrijdenHeel()->toArray());
+
+        uasort($totalMatches, function ($a, $b) {
+            return (int) $a->getId() < (int) $b->getId();
+        });
+
+        $counter = count($totalMatches);
+        $onStreak = true;
+
+        while($counter > (count($totalMatches) - 3)) {
+            --$counter;
+
+
+            if ($totalMatches[$counter]->getWinnaar() !== $this) {
+                $onStreak = false;
+                break;
+            }
+
+            if($counter === 0) {
+                break;
+            }
+        }
+
+        return $onStreak;
+
+
+    }
+
     public function addGewonnenWedstrijden(Wedstrijd $gewonnenWedstrijden): self
     {
         if (!$this->gewonnenWedstrijden->contains($gewonnenWedstrijden)) {

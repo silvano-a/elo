@@ -28,9 +28,6 @@ final class EloCalculator
 
         $sum  = $this->sumOpponentEloLogs($opponentEloLogs);
 
-        if($sum <= 0) {
-            $sum = 1200;
-        }
 
         return $this->calculateElo(
             $sum,
@@ -41,7 +38,7 @@ final class EloCalculator
 
     private function calculateElo(int $totalRating, int $aantalWins, int $aantalLosses)
     {
-        return ($totalRating + ( 400 * ($aantalWins - $aantalLosses))) / ($aantalLosses + $aantalWins);
+        return ((1200 + $totalRating) + ( 400 * ($aantalWins - $aantalLosses))) / (($aantalLosses + $aantalWins) + 1);
     }
 
     private function sumOpponentEloLogs($collection)

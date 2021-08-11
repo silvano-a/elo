@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Rating</th>
                 <th>Spelers</th>
                 <th>actions</th>
             </tr>
@@ -16,7 +16,7 @@
         <tbody>
         {% for wedstrijd in wedstrijds %}
             <tr>
-                <td>{{ wedstrijd.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td>
                     {{ wedstrijd.spelerHalf|isWinnaar(wedstrijd)|raw }} vs {{ wedstrijd.spelerHeel|isWinnaar(wedstrijd)|raw }}
                 </td>
